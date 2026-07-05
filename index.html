@@ -1,101 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>LK HLS PLAYER</title>
-<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; img-src * data: blob: 'unsafe-inline'; frame-src *; media-src * blob:;">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-:root {
---primary-color: #4f46e5;
---background-color: #1e1e2f;
---surface-color: #2a2a3d;
---text-color: #e0e0ff;
-}
-
-body {
-margin: 0;
-background: var(--background-color);
-font-family: 'Poppins', sans-serif;
-display: flex;
-flex-direction: column;
-min-height: 100vh;
-align-items: center;
-justify-content: center; /* प्लेयरलाई बिचमा राख्न */
-padding: 1rem;
-}
-
-.player-container {
-background: var(--surface-color);
-padding: 10px;
-border-radius: 10px;
-width: 100%;
-max-width: 800px;
-}
-
-video {
-width: 100%;
-border-radius: 10px;
-background: black;
-outline: none;
-display: block;
-}
-
-/* तलको सम्पूर्ण भाग लुकाइएको */
-.url-container {
-    display: none !important;
-}
-
-h1 {
-    color: #ffffff;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Live Stream Player</title>
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <style>
+        body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .video-container { width: 90%; max-width: 800px; }
+        .video-js { width: 100%; height: 450px; border-radius: 8px; }
+    </style>
 </head>
 <body>
 
-<h1>LK HLS PLAYER</h1>
-<section class="player-container">
-    <div class="video-section">
-        <video id="video" controls playsinline webkit-playsinline autoplay muted></video>
-    </div>
-</section>
+<div class="video-container">
+    <video id="my-player" class="video-js vjs-big-play-centered" controls preload="auto" playsinline>
+        <source src="https://muc002.myturn1.top:8088/live/webcricfifa1/playlist.m3u8?id=124249&pk=bb4c8519929a80b4bd3b7b0616dc26a35a810c4a4d5854f3a5299db9257c58176fa4886bd5d1fa6353462787010625fb276008b2d2129ac970c95f33c1f9a583" type="application/x-mpegURL">
+    </video>
+</div>
 
-<!-- यो भाग देखिने छैन -->
-<section class="url-container">
-    <div class="url-section">
-        <input id="url-input" type="text" />
-        <button id="load-button">Load</button>
-    </div>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 <script>
-const video = document.getElementById('video');
-const urlInput = document.getElementById('url-input');
+    var player = videojs('my-player', {
+        autoplay: 'muted', // Must be muted to autoplay
+        muted: true,       // Force mute for browser compliance
+        playsinline: true  // Essential for mobile
+    });
 
-// डिफल्ट URL
-const defaultUrl = 'https://live.inplyr.com/room/360663.m3u8';
+    // Attempt to play on load
+    player.ready(function() {
+        player.play().catch(function(error) {
+            console.log("Autoplay blocked, waiting for user interaction.");
+        });
+    });
 
-function setupPlayer(url) {
-    if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-    } else {
-        video.src = url;
-    }
-}
-
-// पेज लोड हुँदा अटोमेटिक चल्ने
-window.addEventListener('load', () => {
-    urlInput.value = defaultUrl;
-    setupPlayer(defaultUrl);
-});
+    // Auto-reload on error
+    player.on('error', function() {
+        console.warn("Stream error. Reconnecting...");
+        setTimeout(() => {
+            player.src({
+                src: 'https://muc002.myturn1.top:8088/live/webcricfifa1/playlist.m3u8?id=124249&pk=bb4c8519929a80b4bd3b7b0616dc26a35a810c4a4d5854f3a5299db9257c58176fa4886bd5d1fa6353462787010625fb276008b2d2129ac970c95f33c1f9a583',
+                type: 'application/x-mpegURL'
+            });
+            player.play();
+        }, 2000);
+    });
 </script>
+
 </body>
 </html>
