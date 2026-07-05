@@ -360,7 +360,16 @@ opacity: 1;
     </div>
 </section>
 
-
+<section class="url-container" role="region" aria-label="URL Input Section">
+    <div class="url-section">
+        <h2 class="stream-title" id="stream-title">Enter HLS Stream URL (M3U8)</h2>
+        <div class="input-group">
+            <input id="url-input" type="text" style="text-align: left !important; text-align-last: left !important;" aria-label="Enter HLS m3u8 URL" placeholder="Enter HLS .m3u8 URL here..." />
+            <button id="load-button" aria-label="Load HLS Video">Load</button>
+            <button id="reload-button" aria-label="Reload Video" title="Reload Video">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/>
+                </svg>
             </button>
         </div>
         <p id="error-message" class="error-message" role="alert" aria-live="polite" style="display:none;"></p>
