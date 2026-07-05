@@ -66,11 +66,6 @@ margin-bottom: 0;
 position: relative;
 }
 
-.url-section {
-border-top: 1px solid var(--input-border);
-padding-top: 1rem;
-}
-
 video {
 width: 100%;
 border-radius: 10px;
@@ -105,95 +100,6 @@ video::-ms-track {
 display: none !important;
 }
 
-.input-group {
-display: flex;
-gap: 0.75rem;
-transition: opacity 0.3s ease;
-}
-
-.input-group.hidden {
-display: none;
-}
-
-.stream-title {
-color: var(--text-color);
-text-align: center;
-margin: 0;
-font-size: 1.1rem;
-opacity: 0;
-transition: opacity 0.3s ease;
-display: none;
-cursor: pointer;
-padding: 0.5rem;
-}
-
-.stream-title:hover {
-background: var(--input-bg);
-border-radius: 8px;
-}
-
-.stream-title .url-text {
-color: var(--accent-color);
-font-size: 0.9rem;
-margin-top: 0.5rem;
-display: block;
-}
-
-.stream-title.visible {
-opacity: 1;
-display: block;
-}
-
-input[type="text"] {
--webkit-user-select: text;
--moz-user-select: text;
--ms-user-select: text;
-user-select: text;
-flex: 1;
-padding: 0.75rem 1rem;
-border-radius: 8px;
-border: 1.5px solid var(--input-border);
-background: var(--input-bg);
-color: var(--text-color);
-font-size: 1rem;
-transition: border-color 0.3s ease;
-text-align: left;
-text-align-last: left;
-direction: ltr;
-text-indent: 0;
-caret-position: start;
-}
-
-input[type="text"]::placeholder {
-text-align: left;
-text-align-last: left;
-direction: ltr;
-text-indent: 0;
-}
-
-input[type="text"]:focus {
-border-color: var(--input-focus-border);
-outline: none;
-}
-
-button {
-background: var(--primary-color);
-border: none;
-border-radius: 8px;
-color: white;
-padding: 0 1.5rem;
-cursor: pointer;
-font-weight: 600;
-transition: background-color 0.3s ease;
-font-size: 1rem;
-}
-
-button:hover,
-button:focus {
-background: #3730a3;
-outline: none;
-}
-
 .error-message {
 color: var(--error-color);
 font-weight: 600;
@@ -202,25 +108,9 @@ font-size: 0.9rem;
 text-align: center;
 }
 
-#reload-button {
-    padding: 0 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#reload-button svg {
-    width: 18px;
-    height: 18px;
-}
-
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
-
-#reload-button.loading svg {
-    animation: spin 1s linear infinite;
 }
 
 @media (max-width: 480px) {
@@ -231,25 +121,6 @@ padding: 1rem;
 .player-container {
 max-width: 100%;
 padding: 0.75rem;
-}
-
-input[type="text"] {
-font-size: 0.9rem;
-padding: 0.6rem 0.8rem;
-}
-
-button {
-padding: 0 1rem;
-font-size: 0.9rem;
-}
-
-#reload-button {
-    padding: 0 0.8rem;
-}
-
-#reload-button svg {
-    width: 16px;
-    height: 16px;
 }
 }
 
@@ -332,20 +203,6 @@ opacity: 1;
     font-size: 10px;
 }
 }
-
-.url-container {
-    background: var(--surface-color);
-    padding: 0.5rem;
-    border-radius: 10px;
-    width: 100%;
-    max-width: 800px;
-    margin-top: 0.5rem;
-}
-
-.url-section {
-    padding-top: 0;
-    border-top: none;
-}
 </style>
 </head>
 <body>
@@ -360,31 +217,9 @@ opacity: 1;
     </div>
 </section>
 
-<section class="url-container" role="region" aria-label="URL Input Section">
-    <div class="url-section">
-        <h2 class="stream-title" id="stream-title">Enter HLS Stream URL (M3U8)</h2>
-        <div class="input-group">
-            <input id="url-input" type="text" style="text-align: left !important; text-align-last: left !important;" aria-label="Enter HLS m3u8 URL" placeholder="Enter HLS .m3u8 URL here..." />
-            <button id="load-button" aria-label="Load HLS Video">Load</button>
-            <button id="reload-button" aria-label="Reload Video" title="Reload Video">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/>
-                </svg>
-            </button>
-        </div>
-        <p id="error-message" class="error-message" role="alert" aria-live="polite" style="display:none;"></p>
-    </div>
-</section>
-
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
 const video = document.getElementById('video');
-const urlInput = document.getElementById('url-input');
-const loadButton = document.getElementById('load-button');
-const errorMessage = document.getElementById('error-message');
-const reloadButton = document.getElementById('reload-button');
-const inputGroup = document.querySelector('.input-group');
-const streamTitle = document.getElementById('stream-title');
 const liveDot = document.querySelector('.live-dot');
 
 let hls;
@@ -412,14 +247,8 @@ function setLiveDotActive() {
 }
 
 function showError(message) {
-    errorMessage.textContent = message;
-    errorMessage.style.display = 'block';
+    console.error(message);
     setLiveDotInactive();
-}
-
-function clearError() {
-    errorMessage.textContent = '';
-    errorMessage.style.display = 'none';
 }
 
 // Checks if the user is on Safari or an HLS native capable browser
@@ -478,9 +307,8 @@ function setupContinuousPlay() {
 }
 
 function reloadCurrentStream() {
-    const currentUrl = urlInput.value.trim() || video.currentSrc;
+    const currentUrl = video.currentSrc;
     if (currentUrl) {
-        reloadButton.classList.add('loading');
         console.log('Reloading stream...');
         
         // Stop current playback
@@ -495,9 +323,6 @@ function reloadCurrentStream() {
             hls = null;
         }
         
-        // Clear any existing errors
-        clearError();
-        
         // Wait a moment before restarting
         setTimeout(() => {
             // Force CORS headers
@@ -507,7 +332,6 @@ function reloadCurrentStream() {
             
             // Setup player with fresh HLS instance
             setupPlayer(finalUrl);
-            reloadButton.classList.remove('loading');
         }, 1000);
     } else {
         showError('No stream to reload');
@@ -515,7 +339,6 @@ function reloadCurrentStream() {
 }
 
 function setupPlayer(url) {
-    clearError();
     setLiveDotInactive();
 
     if (hls) {
@@ -580,7 +403,6 @@ function setupPlayer(url) {
                 console.log('Manifest parsed, qualities available:', hls.levels.length);
                 tryAutoplay();
                 setupContinuousPlay();
-                clearError();
             });
 
             let retryCount = 0;
@@ -605,7 +427,7 @@ function setupPlayer(url) {
                             console.log('Media error, attempting recovery...');
                             showError("Media error. Recovering...");
                             hls.recoverMediaError();
-                            break;
+              0             break;
                         default:
                             showError("An error occurred while loading the video.");
                             console.error('Fatal error:', data);
@@ -645,115 +467,12 @@ setupPlayer(currentSrc);
 }
 });
 
-function hideUrlInput() {
-    inputGroup.classList.add('hidden');
-    streamTitle.classList.add('visible');
-}
-
-function formatUrl(url) {
-    try {
-        if (url.includes('proxy.php?url=')) {
-            const proxyPart = url.split('proxy.php?url=')[0];
-            const encodedUrl = url.split('proxy.php?url=')[1];
-            const decodedUrl = decodeURIComponent(encodedUrl);
-            return proxyPart + 'proxy.php?url=' + decodedUrl;
-        }
-        return url;
-    } catch (e) {
-        return url;
-    }
-}
-
-function showUrlInput() {
-    inputGroup.classList.remove('hidden');
-    streamTitle.classList.remove('visible');
-    
-    // Focus on input and ensure cursor is at start
-    urlInput.focus();
-    requestAnimationFrame(() => {
-        urlInput.setSelectionRange(0, 0);
-        urlInput.scrollLeft = 0;
-    });
-}
-
-// Add input handler to keep cursor at start and scroll to start
-urlInput.addEventListener('input', function() {
-    requestAnimationFrame(() => {
-        this.scrollLeft = 0;
-    });
-});
-
-// Add click handler for input
-urlInput.addEventListener('click', function(event) {
-    event.stopPropagation();
-});
-
-// Add focus handler
-urlInput.addEventListener('focus', function() {
-    requestAnimationFrame(() => {
-        this.setSelectionRange(0, 0);
-        this.scrollLeft = 0;
-    });
-});
-
-// Add click handler for stream title
-streamTitle.addEventListener('click', (event) => {
-    event.stopPropagation(); // Prevent document click from immediately hiding
-    showUrlInput();
-});
-
-// Add click handler for input group to prevent hiding when clicking inside
-inputGroup.addEventListener('click', (event) => {
-    event.stopPropagation();
-});
-
-// Add document click handler to hide URL input when clicking outside
-document.addEventListener('click', () => {
-    if (!inputGroup.classList.contains('hidden')) {
-        hideUrlInput();
-    }
-});
-
-// Update loadButton click handler
-loadButton.addEventListener('click', (event) => {
-    event.stopPropagation();
-    let url = urlInput.value.trim();
-    if(!url) {
-        showError('Please enter a valid HLS .m3u8 URL');
-        return;
-    }
-    // Re-encode the URL before loading
-    if (url.includes('proxy.php?url=')) {
-        const proxyPart = url.split('proxy.php?url=')[0];
-        const actualUrl = url.split('proxy.php?url=')[1];
-        url = proxyPart + 'proxy.php?url=' + encodeURIComponent(actualUrl);
-    }
-    clearError();
-    setupPlayer(url);
-    hideUrlInput();
-});
-
-// Allow pressing Enter key in input to load video
-urlInput.addEventListener('keydown', event => {
-if(event.key === 'Enter') {
-loadButton.click();
-}
-});
-
 // On page load, set default URL and setup player
 window.addEventListener('load', () => {
     const streamUrl = 'https://muc001.myturn1.top:8088/live/webcricfifa2/playlist.m3u8?vidictid=206393821343&id=117658&pk=bb4c8519929a80b4bd3b7b0616dc26a35a810c4a4d5854f3a5299db9257c58176fa4886bd5d1fa6353462787010625fb276008b2d2129ac970c95f33c1f9a583';
-    urlInput.value = streamUrl;
     video.muted = true;
     video.autoplay = true;
     setupPlayer(streamUrl);
-    hideUrlInput();
-});
-
-// Add reload button click handler with stopPropagation
-reloadButton.addEventListener('click', (event) => {
-    event.stopPropagation();
-    reloadCurrentStream();
 });
 
 // Add keyboard shortcut (R key) for reload
@@ -805,43 +524,12 @@ video.addEventListener('click', (event) => {
     }
 });
 
-// Add URL input event handlers
-urlInput.addEventListener('mouseup', (event) => {
-    if (event.detail === 2) { // Double click
-        event.preventDefault();
-        setTimeout(() => {
-            event.target.select();
-        }, 0);
-    }
-});
-
-urlInput.addEventListener('mousedown', (event) => {
-    if (event.detail === 2) { // Double click
-        event.preventDefault();
-    }
-});
-
-urlInput.addEventListener('click', (event) => {
-    event.stopPropagation();
-});
-
-urlInput.addEventListener('contextmenu', (event) => {
-    event.stopPropagation();
-    // Ensure text selection remains after right-click
-    if (window.getSelection().toString().length === 0) {
-        event.target.select();
-    }
-});
-
 // Prevent selection from being lost when clicking outside
 document.addEventListener('mousedown', (event) => {
-    if (event.target !== urlInput && window.getSelection().toString().length > 0) {
+    if (window.getSelection().toString().length > 0) {
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
-            if (range.commonAncestorContainer === urlInput || range.commonAncestorContainer.parentNode === urlInput) {
-                event.preventDefault();
-            }
         }
     }
 });
